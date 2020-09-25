@@ -257,9 +257,11 @@ body {
           margin: 1rem;
           font-family: "Lato", sans-serif;
           font-size: 1rem;
+          outline: none;
         }
         .song {
           color: #000;
+          outline: none;
         }
         .playing {
           color: #cffffe;
