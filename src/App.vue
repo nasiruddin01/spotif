@@ -1,5 +1,5 @@
 <template>
-  <div id="app">
+  <div class="container" id="app">
     <header>
       <h1>My Music</h1>
     </header>
@@ -8,7 +8,7 @@
         <h2 class="song-title">
           {{ current.title }} - <span>{{ current.artist }}</span>
         </h2>
-        <div class="contro">
+        <div class="controls">
           <button class="prev" @click="prev">
             <svg
               height="24"
@@ -100,7 +100,7 @@
           v-for="song in songs"
           :key="song.src"
           @click="play(song)"
-          :class="song.src == current.src ? 'song playing' : 'song'"
+          :class="{ playing: song.isPlaying }"
         >
           {{ song.title }} -{{ song.artist }}
         </button>
@@ -121,12 +121,14 @@ export default {
         {
           title: "Jodi mon kade",
           artist: "Shawon",
-          src: require("./assets/jodi-mon.mp3")
+          src: require("./assets/jodi-mon.mp3"),
+          isPlaying: false
         },
         {
           title: "Kisu kisu number",
           artist: "Unknown",
-          src: require("./assets/kisu-kisu.mp3")
+          src: require("./assets/kisu-kisu.mp3"),
+          isPlaying: false
         }
       ],
       player: new Audio()
@@ -137,19 +139,27 @@ export default {
       if (typeof song.src !== "undefined") {
         this.current = song;
         this.player.src = this.current.src;
+        this.isPlaying = true;
       }
+      this.isPlaying = true;
+      this.songs[this.index].isPlaying = true;
       this.player.play();
       this.player.addEventListener(
         "ended",
         function() {
           this.index++;
+          if (this.index > this.songs.length - 1) {
+            this.index = 0;
+          }
+          this.current = this.songs[this.index];
+          this.play(this.current);
         }.bind(this)
       );
-      this.isPlaying = true;
     },
     pause() {
       this.player.pause();
       this.isPlaying = false;
+      this.songs[this.index].isPlaying = false;
     },
     next() {
       this.index++;
@@ -177,26 +187,86 @@ export default {
 </script>
 
 <style lang="scss">
+@import url("https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700&family=Montserrat:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600&display=swap");
+
+$bg-primary: #c3aed6;
+$bg-secondary: #efbbcf;
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 body {
-  font-family: sans-serif;
+  font-family: "Montserrat", sans-serif;
   max-width: 768px;
   margin: auto;
-  header {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 15px;
-    background-color: #5d54a4;
-    color: #fff;
-  }
-  main {
-    width: 100%;
-    margin: 0 auto;
+  .container {
+    background-color: $bg-primary;
+    box-shadow: 14px 10px 14px -7px #393b44;
+    border-radius: 5px;
+
+    header {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-top: 2rem;
+      padding: 15px;
+      border-radius: 5px 5px 0px 0px;
+      background-color: $bg-secondary;
+      color: #fff;
+    }
+    main {
+      width: 100%;
+      margin: 0 auto;
+      .song-title {
+        text-align: center;
+        margin: 1rem 0;
+      }
+      .controls {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        button {
+          margin: 0.5rem;
+          border: none;
+          color: #cffffe;
+          background-color: $bg-primary;
+        }
+        .prev {
+          outline: none;
+        }
+        .play {
+          outline: none;
+        }
+        .pause {
+          outline: none;
+        }
+        .next {
+          outline: none;
+        }
+      }
+      .playlist {
+        text-align: center;
+        h3 {
+          margin: 2rem 0;
+        }
+        button {
+          border: none;
+          background-color: $bg-primary;
+          margin: 1rem;
+          font-family: "Lato", sans-serif;
+          font-size: 1rem;
+        }
+        .song {
+          color: #000;
+        }
+        .playing {
+          color: #cffffe;
+          outline: none;
+        }
+      }
+    }
   }
 }
 </style>
