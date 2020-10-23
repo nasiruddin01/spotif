@@ -1,4 +1,7 @@
 # spotif
+This site is build in vue.js
+
+Site live link: https://spotifbd.netlify.app/
 
 ## Project setup
 ```
